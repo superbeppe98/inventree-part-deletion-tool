@@ -20,7 +20,7 @@ Here's an example output for the given sample:
 ```shell
 Item ID: 1234
 Found 5 stock items
-Tutto lo stock associato al Part con ID 1234 è stato eliminato.
+All stock associated with the Part with ID 1234 has been deleted.
 The item with IPN TEST-1 has been deleted
 Item ID: 5678
 Found 0 stock items
