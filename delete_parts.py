@@ -7,15 +7,22 @@ from inventree.stock import StockItem
 # Load environment variables from .env file
 load_dotenv()
 
+# Specify the path to the file containing URLs
+path = "input.txt"
+
+# Create the file if it doesn't exist
+if not os.path.exists(path):
+    with open(path, "w") as f:
+        pass
+
 # Create an instance of the Inventree API
 SERVER_ADDRESS = os.environ.get('INVENTREE_SERVER_ADDRESS')
 MY_USERNAME = os.environ.get('INVENTREE_USERNAME')
 MY_PASSWORD = os.environ.get('INVENTREE_PASSWORD')
 api = InvenTreeAPI(SERVER_ADDRESS, username=MY_USERNAME, password=MY_PASSWORD)
 
-
 # Load the list of IPNs from the input file
-with open('input.txt', 'r') as f:
+with open(path, 'r') as f:
     ipn_list = [line.strip() for line in f]
 
 # Loop through each IPN in the list
