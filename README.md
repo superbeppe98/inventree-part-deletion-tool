@@ -12,7 +12,7 @@ To use the Inventree Part Deletion Tool, you need to provide a list of IPNs (Int
 
 Once you have the input file ready, you can run the program by navigating to the directory where the program is stored and running the following command:
 ```shell
-$ python3 delete_parts.py
+$ python3 inventree-part-deletion-tool.py
 ```
 This will loop through each IPN in the input file and delete the corresponding part and all its associated stock items from the Inventree database.
 
