@@ -29,11 +29,20 @@ with open(path, 'r') as f:
 # Loop through each IPN in the list
 for ipn in ipn_list:
 
-    # Extract the first 11 characters of the IPN
-    ipn_to_compare = ipn[:11]
+    # Calculate the checksum for the UPC-A code (last digit)
+    total_sum = 0
+
+    for i in range(0, 11):
+        digit = int(ipn[i])
+        total_sum += digit * (3 if i % 2 == 0 else 1)
+
+    ipn_checksum = (10 - (total_sum % 10)) % 10
+
+    # Add the checksum to the UPC-A code to get the complete UPC-A code
+    ipn = ipn + str(ipn_checksum)
 
     # Call the function to get the list of items with the specified IPN
-    item = Part.list(api, IPN__startswith=ipn_to_compare)
+    item = Part.list(api, IPN=ipn)
 
     # Check if any items were found
     if len(item) <= 0:
@@ -52,23 +61,6 @@ for ipn in ipn_list:
         StockItem.bulkDelete(api, [item['pk'] for item in stock_items])
         print(
             f"All stock associated with the Part with ID {item_id} has been deleted.")
-
-    # Retrieve part instance with the specified ID
-    part = Part(api, item_id)
-
-    # Set the item to inactive
-    # Update specified part parameters
-    part.save(data={
-        "active": False,
-    })
-
-    # Reload data from remote server
-    part.reload()
-
-    # Delete the item
-    part.delete()
-
-    print(f"The item with IPN {ipn} has been deleted")
 
     # Retrieve part instance with the specified ID
     part = Part(api, item_id)
