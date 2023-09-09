@@ -19,17 +19,21 @@ if not os.path.exists(path):
 SERVER_ADDRESS = os.environ.get('INVENTREE_SERVER_ADDRESS')
 MY_USERNAME = os.environ.get('INVENTREE_USERNAME')
 MY_PASSWORD = os.environ.get('INVENTREE_PASSWORD')
-api = InvenTreeAPI(SERVER_ADDRESS, username=MY_USERNAME, password=MY_PASSWORD)
+api = InvenTreeAPI(SERVER_ADDRESS, username=MY_USERNAME,
+                   password=MY_PASSWORD, timeout=3600)
 
 # Load the list of IPNs from the input file
 with open(path, 'r') as f:
-    ipn_list = [line.strip()[:11] for line in f]
+    ipn_list = [line.strip() for line in f]
 
 # Loop through each IPN in the list
 for ipn in ipn_list:
 
+    # Extract the first 11 characters of the IPN
+    ipn_to_compare = ipn[:11]
+
     # Call the function to get the list of items with the specified IPN
-    item = Part.list(api, IPN=ipn)
+    item = Part.list(api, IPN__startswith=ipn_to_compare)
 
     # Check if any items were found
     if len(item) <= 0:
@@ -48,6 +52,23 @@ for ipn in ipn_list:
         StockItem.bulkDelete(api, [item['pk'] for item in stock_items])
         print(
             f"All stock associated with the Part with ID {item_id} has been deleted.")
+
+    # Retrieve part instance with the specified ID
+    part = Part(api, item_id)
+
+    # Set the item to inactive
+    # Update specified part parameters
+    part.save(data={
+        "active": False,
+    })
+
+    # Reload data from remote server
+    part.reload()
+
+    # Delete the item
+    part.delete()
+
+    print(f"The item with IPN {ipn} has been deleted")
 
     # Retrieve part instance with the specified ID
     part = Part(api, item_id)
