@@ -23,7 +23,7 @@ api = InvenTreeAPI(SERVER_ADDRESS, username=MY_USERNAME, password=MY_PASSWORD)
 
 # Load the list of IPNs from the input file
 with open(path, 'r') as f:
-    ipn_list = [line.strip() for line in f]
+    ipn_list = [line.strip()[:11] for line in f]
 
 # Loop through each IPN in the list
 for ipn in ipn_list:
