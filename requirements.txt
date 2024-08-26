@@ -1,2 +1,2 @@
-inventree==0.14.0
+inventree==0.16.1
 python-dotenv==1.0.1
